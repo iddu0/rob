@@ -2,7 +2,7 @@ name: Build & Release
 
 on:
   release:
-    types: [published]  # triggers when a release is published
+    types: [published]
 
 jobs:
   build:
@@ -40,19 +40,28 @@ jobs:
           fi
         shell: bash
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rob-${{ github.event.release.tag_name }}-${{ matrix.os }}
+          path: dist/*
+
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download all built binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
 
       - name: Upload Binaries to Release
         uses: softprops/action-gh-release@v2
         if: github.event.release.draft == false
         with:
           files: |
-            dist/rob-${{ github.event.release.tag_name }}.exe
-            dist/rob-${{ github.event.release.tag_name }}-linux
-            dist/rob-${{ github.event.release.tag_name }}-mac
+            dist/rob-${{ github.event.release.tag_name }}-windows-latest.exe
+            dist/rob-${{ github.event.release.tag_name }}-ubuntu-latest-linux
+            dist/rob-${{ github.event.release.tag_name }}-macos-latest-mac
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
