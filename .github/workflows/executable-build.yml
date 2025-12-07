@@ -26,6 +26,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable
+        shell: bash
         run: |
           VERSION=${{ github.event.release.tag_name }}
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
@@ -36,12 +37,17 @@ jobs:
           fi
 
       - name: Upload binary to release
+        shell: bash
         run: |
           VERSION=${{ github.event.release.tag_name }}
+
+          # Authenticate gh with the PAT provided in GITHUB_TOKEN env
+          echo "$GITHUB_TOKEN" | gh auth login --with-token
+
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            gh release upload ${{ github.event.release.tag_name }} rob-$VERSION.exe
+            gh release upload "${{ github.event.release.tag_name }}" rob-$VERSION.exe
           else
-            gh release upload ${{ github.event.release.tag_name }} dist/rob-$VERSION
+            gh release upload "${{ github.event.release.tag_name }}" dist/rob-$VERSION
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
