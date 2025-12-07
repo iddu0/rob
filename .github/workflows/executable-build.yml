@@ -2,7 +2,7 @@ name: Build & Release
 
 on:
   release:
-    types: [published]  # triggers when you publish a release
+    types: [published]  # triggers when a release is published
 
 jobs:
   build:
@@ -23,6 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pyinstaller
+        shell: bash
 
       - name: Build executable
         run: |
@@ -30,9 +31,14 @@ jobs:
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             pyinstaller --onefile main.py
             mv dist/main.exe dist/rob-$VERSION.exe
-          else
+          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
             pyinstaller --onefile --name rob-$VERSION main.py
+            mv dist/rob-$VERSION dist/rob-$VERSION-linux
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            pyinstaller --onefile --name rob-$VERSION main.py
+            mv dist/rob-$VERSION dist/rob-$VERSION-mac
           fi
+        shell: bash
 
   release:
     needs: build
