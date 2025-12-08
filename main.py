@@ -69,16 +69,21 @@ def main():
     ####################
 
     elif args.update:
-        print("updating rob...")
-        os.system('curl -L -o rob-updater.bat https://github.com/HollowTechnology/rob/releases/latest/download/rob-installer.bat')
-        os.system('rob-updater.bat')
+        pm = input("Update using (1) pip or (2) uv?")
+        if pm == "1":
+            print("Updating rob using pip")
+            os.system("pip install rob-dl")
+        elif pm == "2":
+            os.system("uv pip install rob-dl")
+        else:
+            print("Please input (1) pip or (2) uv")
 
     ####################
     # No flags
     ####################
 
     else:
-        print("please provide a flag: -v for video, -f for file, or -u for update")
+        print("Please provide a flag; -v for video, -f for file, or -u for updating rob")
 
 if __name__ == "__main__":
     main()
