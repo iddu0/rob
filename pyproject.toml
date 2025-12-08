@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rob-dl"
-version = "0.1.1"
+version = "0.1.2"
 description = "rob is a tool that combines curl and yt-dlp to easily download YouTube videos and Files"
 readme = "README.md"
 requires-python = ">=3.14"
